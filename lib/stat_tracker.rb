@@ -13,8 +13,6 @@ class StatTracker
   end
 
 
-  def best_fans
-  end
 
   def home_games(team_id)
     @game_teams.find_all do |game_team|
@@ -30,16 +28,42 @@ class StatTracker
 
   def home_win_percentage(team_id)
     home_wins = home_games(team_id).find_all do |game|
-      game.results == "WIN"
+      game.result == "WIN"
     end
-    home_wins/home_games(team_id).length
+    percent = (home_wins.length / home_games(team_id).length.to_f) * 100
+    percent.round(2)
   end
 
   def away_win_percentage(team_id)
     away_wins = away_games(team_id).find_all do |game|
-      game.results == "WIN"
+      game.result == "WIN"
     end
-    home_wins/home_games(team_id).length
+    percent = (away_wins.length / home_games(team_id).length.to_f) * 100
+    percent.round(2)
+  end
+
+  def all_teams_playing
+    @game_teams.map {|game_team| game_team.team_id}.uniq
+  end
+
+  def change_team_id_to_name(team_id)
+    that_team = teams.find {|team| team.team_id == team_id}
+    that_team.team_name
+  end
+  
+  def best_fans
+    best_fans_team_id = all_teams_playing.max_by do |team_id|
+      home_win_percentage(team_id) - away_win_percentage(team_id)
+    end
+    change_team_id_to_name(best_fans_team_id)
+  end
+
+
+  def worst_fans
+    worst_fans_id = all_teams_playing.find_all do |team_id|
+      away_win_percentage(team_id) > home_win_percentage(team_id)
+    end
+    worst_fans_id.map {|id| change_team_id_to_name(id)}
   end
 
 end
