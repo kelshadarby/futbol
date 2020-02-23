@@ -110,7 +110,7 @@ class StatTracker
   def most_accurate_team(season_id)
     team = getting_goals_to_shots_ratio(season_id).max_by do |team_id, ratio|
       ratio
-    end 
+    end
     change_team_id_to_name(team[0])
   end
 

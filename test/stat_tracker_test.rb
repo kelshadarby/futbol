@@ -73,8 +73,8 @@ class StatTrackerTest < Minitest::Test
 # new code, iteration 4:
 
   def test_can_get_gameid_of_games_that_season
-    assert_kind_of Array, @stat_tracker.gameid_of_games_that_season(20132014)
-    assert_equal 29, @stat_tracker.gameid_of_games_that_season(20132014).length
+    assert_kind_of Array, @stat_tracker.gameid_of_games_that_season(20122013)
+    assert_equal 51, @stat_tracker.gameid_of_games_that_season(20122013).length
   end
 
   def test_it_can_get_game_teams_that_season
@@ -84,6 +84,7 @@ class StatTrackerTest < Minitest::Test
 
   def test_make_hash_with_team_games_by_team
     assert_kind_of Hash, @stat_tracker.create_hash_with_team_games_by_team(20122013)
+    assert_equal 7, @stat_tracker.create_hash_with_team_games_by_team(20122013).length
     # need more testing
   end
 
