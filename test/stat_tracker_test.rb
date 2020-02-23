@@ -70,6 +70,53 @@ class StatTrackerTest < Minitest::Test
   end
 
 
+# new code, iteration 4:
+
+  def test_can_get_gameid_of_games_that_season
+    assert_kind_of Array, @stat_tracker.gameid_of_games_that_season(20132014)
+    assert_equal 29, @stat_tracker.gameid_of_games_that_season(20132014).length
+  end
+
+  def test_it_can_get_game_teams_that_season
+      assert_kind_of Array, @stat_tracker.game_teams_that_season(8, 20122013)
+      assert_equal 4, @stat_tracker.game_teams_that_season(8, 20122013).length
+  end
+
+  def test_make_hash_with_team_games_by_team
+    assert_kind_of Hash, @stat_tracker.create_hash_with_team_games_by_team(20122013)
+    # need more testing
+  end
+
+  def test_adding_all_goals_for_each_team
+    expected = {3=>8, 6=>24, 5=>2, 17=>13, 16=>10, 9=>7, 8=>8}
+    assert_equal expected, @stat_tracker.teams_with_goals_total(20122013)
+  end
+
+  def test_adding_all_shots_for_each_team
+    expected = {3=>38, 6=>76, 5=>32, 17=>46, 16=>58, 9=>21, 8=>35}
+    assert_equal expected, @stat_tracker.teams_with_shots_total(20122013)
+  end
+
+  def test_getting_goals_to_shots_ratio
+    expected = {3=>0.21, 6=>0.32, 5=>0.06, 17=>0.28, 16=>0.17, 9=>0.33, 8=>0.23}
+    assert_equal expected, @stat_tracker.getting_goals_to_shots_ratio(20122013)
+  end
+
+  def test_can_get_most_accurate_team
+    assert_equal "New York City FC", @stat_tracker.most_accurate_team(20122013)
+    # assert_equal "New York City FC", @stat_tracker.most_accurate_team(20132014)
+  end
+
+  def test_can_get_least_accurate_team
+    assert_equal "Sporting Kansas City", @stat_tracker.least_accurate_team(20122013)
+
+  end
+
+
+#   most_accurate_team	Name of the Team with the best
+ # ratio of shots to goals for the season	String
+# least_accurate_team	Name of the Team with the worst
+ # ratio of shots to goals for the season
 
 
 end
