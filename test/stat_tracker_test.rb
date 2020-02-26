@@ -261,6 +261,7 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_winningest_coach
+
     assert_equal "Claude Julien", @stat_tracker.winningest_coach(20122013)
   end
 
@@ -281,7 +282,6 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_it_can_return_regular_results
-    skip
     @stat_tracker.stubs(:game_id_by_team_id_and_season_type).returns({9=>{
       :regular=>[2012020205, 2013021119],
       :post=>[2012030121, 2012030122, 2012030123, 2012030124, 2012030125]
@@ -315,10 +315,8 @@ class StatTrackerTest < Minitest::Test
     assert_equal "Houston Dynamo", @stat_tracker.biggest_surprise
   end
 
-  def test_find_games_in_season
-    skip
-    #not sure how to test this method but we may not need it
-    assert_equal [], @stat_tracker.find_games_in_season(20122013)
+  def test_all_teams_playing_in_season
+    assert_equal "", @stat_tracker.all_teams_playing_in_season
   end
 
   def test_most_tackles
@@ -328,8 +326,7 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_fewest_tackles
-    assert_equal "New York City FC", @stat_tracker.fewest_tackles(20122013)
-    # assert_equal "", @stat_tracker.fewest_tackles(20132014)
+    assert_equal "Atlanta United", @stat_tracker.fewest_tackles(20122013)
   end
 
   def test_team_info
