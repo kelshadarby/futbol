@@ -261,7 +261,6 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_winningest_coach
-
     assert_equal "Claude Julien", @stat_tracker.winningest_coach(20122013)
   end
 
@@ -315,14 +314,8 @@ class StatTrackerTest < Minitest::Test
     assert_equal "Houston Dynamo", @stat_tracker.biggest_surprise
   end
 
-  def test_all_teams_playing_in_season
-    assert_equal "", @stat_tracker.all_teams_playing_in_season
-  end
-
   def test_most_tackles
     assert_equal "FC Dallas", @stat_tracker.most_tackles(20122013)
-    # might need more games or game_teams data to try another season
-    #assert_equal "", @stat_tracker.most_tackles(20132014)
   end
 
   def test_fewest_tackles
