@@ -194,7 +194,13 @@ module SeasonStatistics
   end
 
   def fewest_tackles(season_id)
-    team_id = all_teams_playing.min_by do |team|
+    array = []
+    all_teams_playing.each do |team|
+      if tackles_per_team_in_season(team, season_id) != 0
+        array << team
+      end
+    end
+    team_id = array.min_by do |team|
       tackles_per_team_in_season(team, season_id)
     end
     find_team_names(team_id)

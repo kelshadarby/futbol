@@ -160,7 +160,6 @@ module LeagueStatistics
     find_team_names(best_fans_team_id)
   end
 
-
   def worst_fans
     worst_fans_id = all_teams_playing.find_all do |team_id|
       away_win_percentage(team_id) > home_win_percentage(team_id)
