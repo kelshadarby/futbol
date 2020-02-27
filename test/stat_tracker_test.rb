@@ -22,6 +22,7 @@ class StatTrackerTest < Minitest::Test
       game_teams: game_teams_path
     }
     @stat_tracker = StatTracker.from_csv(locations)
+    @statistics = Statistics.new
   end
 
   def test_it_exists
@@ -114,11 +115,11 @@ class StatTrackerTest < Minitest::Test
     assert_equal "New York City FC", @stat_tracker.best_fans
   end
 
-  # def test_getting_the_teams_with_the_worst_fans
-  #   # @stat_tracker.stubs(:away_win_percentage).returns(80)
-  #   expected = ["Houston Dynamo", "Sporting Kansas City", "New England Revolution", "New York Red Bulls"]
-  #   assert_equal expected, @stat_tracker.worst_fans
-  # end
+  def test_getting_the_teams_with_the_worst_fans
+    @statistics.stubs(:away_win_percentage).returns(80)
+    expected = ["Houston Dynamo", "Sporting Kansas City", "New England Revolution", "New York Red Bulls"]
+    assert_equal expected, @stat_tracker.worst_fans
+  end
 
   def test_most_accurate_team
      assert_equal "New York City FC", @stat_tracker.most_accurate_team(20122013)
@@ -136,19 +137,19 @@ class StatTrackerTest < Minitest::Test
     assert_equal "John Tortorella", @stat_tracker.worst_coach(20122013)
   end
 
-  # def test_it_can_tell_biggest_bust
-  #   @statistics.stubs(:percent_wins_regular_season).returns({3=>0.66, 4=>0.75})
-  #   @statistics.stubs(:percent_wins_postseason).returns({3=>0.33, 4=>0.25})
-  #
-  #   assert_equal "Chicago Fire", @stat_tracker.biggest_bust
-  # end
-  #
-  # def test_it_can_tell_biggest_surprise
-  #   @statistics.stubs(:percent_wins_regular_season).returns({3=>0.66, 4=>0.75})
-  #   @statistics.stubs(:percent_wins_postseason).returns({3=>0.33, 4=>0.25})
-  #
-  #   assert_equal "Houston Dynamo", @stat_tracker.biggest_surprise
-  # end
+  def test_it_can_tell_biggest_bust
+    @statistics.stubs(:percent_wins_regular_season).returns({3=>0.66, 4=>0.75})
+    @statistics.stubs(:percent_wins_postseason).returns({3=>0.33, 4=>0.25})
+
+    assert_equal "Chicago Fire", @stat_tracker.biggest_bust
+  end
+
+  def test_it_can_tell_biggest_surprise
+    @statistics.stubs(:percent_wins_regular_season).returns({3=>0.66, 4=>0.75})
+    @statistics.stubs(:percent_wins_postseason).returns({3=>0.33, 4=>0.25})
+
+    assert_equal "Houston Dynamo", @stat_tracker.biggest_surprise
+  end
 
   def test_most_tackles
     assert_equal "FC Dallas", @stat_tracker.most_tackles(20122013)

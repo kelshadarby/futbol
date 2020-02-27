@@ -177,7 +177,6 @@ class StatisticsTest < Minitest::Test
   end
 
   def test_it_can_return_regular_results
-    skip
     @statistics.stubs(:game_id_by_team_id_and_season_type).returns({9=>{
       :regular=>[2012020205, 2013021119],
       :post=>[2012030121, 2012030122, 2012030123, 2012030124, 2012030125]
