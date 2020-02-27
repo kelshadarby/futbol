@@ -7,6 +7,7 @@ require_relative 'team'
 class Statistics
   include Calculable
   include Hashable
+  attr_reader :games, :game_teams, :teams
 
   def initialize
     @games = Game.all
