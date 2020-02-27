@@ -6,7 +6,6 @@ class GameTeamTest < Minitest::Test
   def setup
     @game_teams = GameTeam.create_game_teams('./test/fixtures/game_teams_truncated.csv')
     @game_team = GameTeam.all[2]
-
   end
 
   def test_it_exists
@@ -30,6 +29,4 @@ class GameTeamTest < Minitest::Test
     assert_equal 1, @game_team.giveaways
     assert_equal 4, @game_team.takeaways
   end
-
-
 end

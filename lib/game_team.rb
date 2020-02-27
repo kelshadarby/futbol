@@ -6,11 +6,9 @@ class GameTeam
 
   def self.create_game_teams(csv_file_path)
     csv = CSV.read(csv_file_path, headers: true, header_converters: :symbol)
-
     all_game_team = csv.map do |row|
       GameTeam.new(row)
     end
-
     @@all = all_game_team
   end
 
@@ -50,8 +48,5 @@ class GameTeam
     @face_off_win_percentage = game_team_parameter[:faceoffwinpercentage].to_f
     @giveaways = game_team_parameter[:giveaways].to_i
     @takeaways = game_team_parameter[:takeaways].to_i
-    # aggregate team with goals scored
-    # aggregate team w goals scored against then
   end
-
 end

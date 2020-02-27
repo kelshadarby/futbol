@@ -1,4 +1,10 @@
-module GameStatistics
+require_relative "statistics"
+
+class GameStatistics < Statistics
+
+  def initialize
+    super
+  end
 
   def highest_total_score
     @games.map { |game| game.away_goals + game.home_goals}.max
@@ -10,12 +16,6 @@ module GameStatistics
 
   def biggest_blowout
     @games.map { |game| (game.away_goals - game.home_goals).abs}.max
-  end
-
-  def find_all_seasons
-    @games.map do |game|
-      game.season
-    end.uniq
   end
 
   def count_of_games_by_season
@@ -35,19 +35,14 @@ module GameStatistics
     (all_goals / @games.length.to_f).round(2)
   end
 
-  def find_games_by_season(season)
-    @games.find_all do |game|
-      game.season == season
-    end
-  end
-
   def average_goals_by_season
     seasons_and_goals_average = {}
     find_all_seasons.each do |season|
       sum_of_goals = find_games_by_season(season).sum do |game|
         (game.away_goals + game.home_goals)
       end
-      seasons_and_goals_average[season.to_s] = (sum_of_goals.to_f / count_of_games_by_season[season.to_s]).round(2)
+      goals_per_game = (sum_of_goals.to_f / count_of_games_by_season[season.to_s])
+      seasons_and_goals_average[season.to_s] = goals_per_game.round(2)
     end
     seasons_and_goals_average
   end
@@ -73,10 +68,9 @@ module GameStatistics
   end
 
   def percentage_ties
-  all_ties = @game_teams.find_all do |game_team|
+    all_ties = @game_teams.find_all do |game_team|
        game_team.result == "TIE"
     end
     (all_ties.length / @game_teams.length.to_f).round(2)
   end
-
 end

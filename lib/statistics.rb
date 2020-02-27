@@ -1,9 +1,137 @@
-require_relative 'calculable'
-require_relative 'hashable'
+require_relative './modules/hashable'
+require_relative './modules/calculable'
+require_relative 'game'
+require_relative 'game_team'
+require_relative 'team'
 
-module SeasonStatistics
+class Statistics
   include Calculable
   include Hashable
+  attr_reader :games, :game_teams, :teams
+
+  def initialize
+    @games = Game.all
+    @game_teams = GameTeam.all
+    @teams = Team.all
+  end
+
+  def find_all_seasons
+    @games.map do |game|
+      game.season
+    end.uniq
+  end
+
+  def find_games_by_season(season)
+    @games.find_all do |game|
+      game.season == season
+    end
+  end
+
+  def find_team_names(team_id)
+    match_team = @teams.find do |team|
+      team.team_id == team_id
+    end
+    match_team.team_name
+  end
+
+  def goals_per_team
+    @game_teams.reduce({}) do |goals_per_team, game_team|
+      hash_builder(goals_per_team, game_team.team_id, game_team.goals)
+    end
+  end
+
+  def average_goals_per_team
+    goals_per_team.transform_values do |goals|
+      average(goals.sum.to_f, goals.size)
+    end
+  end
+
+  def games_teams_and_allowed_goals
+    @games.reduce({}) do |teams_allowed_goals, game|
+      teams_allowed_goals[game.home_team_id] = [] if teams_allowed_goals[game.home_team_id].nil?
+      teams_allowed_goals[game.away_team_id] = [] if teams_allowed_goals[game.away_team_id].nil?
+
+      teams_allowed_goals[game.home_team_id] << game.away_goals
+      teams_allowed_goals[game.away_team_id] << game.home_goals
+
+      teams_allowed_goals
+    end
+  end
+
+  def average_games_teams_and_allowed_goals
+    games_teams_and_allowed_goals.transform_values do |allowed_goals|
+      average(allowed_goals.sum.to_f, allowed_goals.size)
+    end
+  end
+
+  def all_teams_playing
+    @game_teams.map {|game_team| game_team.team_id}.uniq
+  end
+
+  def away_win_percentage(team_id)
+    away_wins = away_games(team_id).find_all do |game|
+      game.result == "WIN"
+    end
+    percent = (away_wins.length / away_games(team_id).length.to_f) * 100
+    percent.round(2)
+  end
+
+  def home_win_percentage(team_id)
+    home_wins = home_games(team_id).find_all do |game|
+      game.result == "WIN"
+    end
+    percent = (home_wins.length / home_games(team_id).length.to_f) * 100
+    percent.round(2)
+  end
+
+  def home_games(team_id)
+    @game_teams.find_all do |game_team|
+      game_team.hoa == "home" && game_team.team_id == team_id
+    end
+  end
+
+  def away_games(team_id)
+    @game_teams.find_all do |game_team|
+      game_team.hoa == "away" && game_team.team_id == team_id
+    end
+  end
+
+  def home_teams_and_goals
+    @games.reduce({}) do |home_games, game|
+      hash_builder(home_games, game.home_team_id, game.home_goals)
+    end
+  end
+
+  def average_home_teams_and_goals
+    home_teams_and_goals.transform_values do |goals|
+      average(goals.sum.to_f, goals.size)
+    end
+  end
+
+  def game_team_results
+    @game_teams.reduce({}) do |results_hash, game_team|
+      hash_builder(results_hash, game_team.team_id, game_team.result)
+    end
+  end
+
+  def percent_wins
+    game_team_results.transform_values do |results|
+      wins = (results.find_all { |result| result == "WIN"})
+      percent(wins.length.to_f, results.length)
+    end
+  end
+
+  def visiting_teams_and_goals
+    @games.reduce({}) do |visitor_games, game|
+      hash_builder(visitor_games, game.away_team_id, game.away_goals)
+    end
+  end
+
+  def average_visiting_teams_and_goals
+    visiting_teams_and_goals.transform_values do |goals|
+      average(goals.sum.to_f, goals.size)
+    end
+  end
 
   def game_teams_that_season(team_id, season_id)
     @game_teams.find_all do |game_team|
@@ -16,26 +144,6 @@ module SeasonStatistics
     all_goals = all_games.sum {|game_team| game_team.goals}
     all_shots = all_games.sum{|game_team| game_team.shots}
     (all_goals.to_f / all_shots).round(5)
-  end
-
-  def most_accurate_team(season_id)
-    teams_with_goals_to_shots_ratio = {}
-    all_teams_playing.each do |team_id|
-      teams_with_goals_to_shots_ratio[team_id] = goals_to_shots_ratio_that_season(team_id, season_id)
-    end
-    teams_with_goals_to_shots_ratio.delete_if { |id, ratio| ratio.nil? || ratio.nan?}
-    highest = teams_with_goals_to_shots_ratio.max_by {|id, ratio| ratio}
-    find_team_names(highest[0])
-  end
-
-  def least_accurate_team(season_id)
-    teams_with_goals_to_shots_ratio = {}
-    all_teams_playing.each do |team_id|
-      teams_with_goals_to_shots_ratio[team_id] = goals_to_shots_ratio_that_season(team_id, season_id)
-    end
-    teams_with_goals_to_shots_ratio.delete_if { |id, ratio| ratio.nil? || ratio.nan?}
-    lowest = teams_with_goals_to_shots_ratio.min_by {|id, ratio| ratio}
-    find_team_names(lowest[0])
   end
 
   def all_coaches
@@ -73,18 +181,6 @@ module SeasonStatistics
       percent_wins[coach] = (num_wins.to_f / number_of_games_by_coach(season_id)[coach]).round(2)
     end
     percent_wins
-  end
-
-  def winningest_coach(season_id)
-    percent_wins_with_active_coaches = percent_wins_by_coach(season_id).delete_if {|coach, wins| wins.nan?}
-    most_wins = percent_wins_with_active_coaches.max_by {|coach, percent| percent}
-    most_wins[0]
-  end
-
-  def worst_coach(season_id)
-    percent_wins_with_active_coaches = percent_wins_by_coach(season_id).delete_if {|coach, wins| wins.nan?}
-    least_wins = percent_wins_with_active_coaches.min_by {|coach, percent| percent}
-    least_wins[0]
   end
 
   def game_id_by_team_id_and_season_type
@@ -143,38 +239,6 @@ module SeasonStatistics
     end
   end
 
-  def biggest_bust
-    difference = percent_wins_regular_season.merge(percent_wins_postseason) do |team_id, reg, post|
-      (reg - post).round(2)
-    end
-
-    find_team_names(hash_key_max_by(difference))
-  end
-
-  def biggest_surprise
-    increase = percent_wins_regular_season.merge(percent_wins_postseason) do |team_id, reg, post|
-      (post - reg).round(2)
-    end
-    find_team_names(hash_key_max_by(increase))
-  end
-
-  def find_games_in_season(season)
-    @games.find_all do |game|
-      game.season == season
-    end
-  end
-
-  def gameid_of_games_that_season(season_id)
-    games_that_season = @games.find_all {|game| game.season == season_id}
-    games_that_season.map {|game| game.game_id}
-  end
-
-  # def game_teams_that_season(team_id, season_id)
-  #   @game_teams.find_all do |game_team|
-  #     gameid_of_games_that_season(season_id).include?(game_team.game_id) && game_team.team_id == team_id
-  #   end
-  # end
-
   def create_hash_with_team_games_by_team(season_id)
     all_teams_playing.reduce({}) do |teams_and_games, team_id|
       teams_and_games[team_id] = game_teams_that_season(team_id, season_id)
@@ -184,25 +248,5 @@ module SeasonStatistics
 
   def tackles_per_team_in_season(team_id, season_id)
     create_hash_with_team_games_by_team(season_id)[team_id].sum { |game_team| game_team.tackles }
-  end
-
-  def most_tackles(season_id)
-    team_id = all_teams_playing.max_by do |team|
-      tackles_per_team_in_season(team, season_id)
-    end
-    find_team_names(team_id)
-  end
-
-  def fewest_tackles(season_id)
-    array = []
-    all_teams_playing.each do |team|
-      if tackles_per_team_in_season(team, season_id) != 0
-        array << team
-      end
-    end
-    team_id = array.min_by do |team|
-      tackles_per_team_in_season(team, season_id)
-    end
-    find_team_names(team_id)
   end
 end

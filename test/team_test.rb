@@ -1,7 +1,6 @@
 require_relative 'test_helper'
 require './lib/team'
 
-
 class TeamTest < Minitest::Test
 
   def setup
@@ -20,6 +19,5 @@ class TeamTest < Minitest::Test
     assert_equal 'CIN', @team.abbreviation
     assert_equal 'Nippert Stadium', @team.stadium
     assert_equal '/api/v1/teams/26', @team.link
-
   end
 end
