@@ -41,4 +41,21 @@ class StatTracker
   def percentage_visitor_wins; @game_statistic.percentage_visitor_wins; end
 
   def percentage_ties; @game_statistic.percentage_ties; end
+
+  def most_accurate_team(season_id); @season_statistic.most_accurate_team(season_id); end
+
+  def least_accurate_team(season_id); @season_statistic.least_accurate_team(season_id); end
+
+  def winningest_coach(season_id);@season_statistic.winningest_coach(season_id); end
+
+  def worst_coach(season_id);@season_statistic.worst_coach(season_id); end
+
+  def biggest_bust; @season_statistic.biggest_bust; end
+
+  def biggest_surprise; @season_statistic.biggest_surprise; end
+
+  def most_tackles(season_id); @season_statistic.most_tackles(season_id); end
+
+  def fewest_tackles(season_id); @season_statistic.fewest_tackles(season_id); end
+
 end
