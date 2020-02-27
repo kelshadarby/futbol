@@ -239,11 +239,6 @@ class Statistics
     end
   end
 
-  def gameid_of_games_that_season(season_id)
-    games_that_season = @games.find_all {|game| game.season == season_id}
-    games_that_season.map {|game| game.game_id}
-  end
-
   def create_hash_with_team_games_by_team(season_id)
     all_teams_playing.reduce({}) do |teams_and_games, team_id|
       teams_and_games[team_id] = game_teams_that_season(team_id, season_id)

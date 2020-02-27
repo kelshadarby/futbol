@@ -6,20 +6,14 @@ class Team
 
   def self.create_teams(csv_file_path)
     csv = CSV.read(csv_file_path, headers: true, header_converters: :symbol)
-
     all_teams = csv.map do |row|
       Team.new(row)
     end
-
     @@all = all_teams
-    # send it game and team file
-    # team can have total goals as instance var
-    # 
   end
 
   def self.all
     @@all
-  
   end
 
   attr_reader :team_id,
@@ -28,7 +22,6 @@ class Team
               :abbreviation,
               :stadium,
               :link
-
 
   def initialize(team_parameter)
     @team_id = team_parameter[:team_id].to_i

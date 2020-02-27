@@ -41,7 +41,8 @@ class GameStatistics < Statistics
       sum_of_goals = find_games_by_season(season).sum do |game|
         (game.away_goals + game.home_goals)
       end
-      seasons_and_goals_average[season.to_s] = (sum_of_goals.to_f / count_of_games_by_season[season.to_s]).round(2)
+      goals_per_game = (sum_of_goals.to_f / count_of_games_by_season[season.to_s])
+      seasons_and_goals_average[season.to_s] = goals_per_game.round(2)
     end
     seasons_and_goals_average
   end
@@ -67,7 +68,7 @@ class GameStatistics < Statistics
   end
 
   def percentage_ties
-  all_ties = @game_teams.find_all do |game_team|
+    all_ties = @game_teams.find_all do |game_team|
        game_team.result == "TIE"
     end
     (all_ties.length / @game_teams.length.to_f).round(2)

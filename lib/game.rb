@@ -6,11 +6,9 @@ class Game
 
   def self.create_games(csv_file_path)
     csv = CSV.read(csv_file_path, headers: true, header_converters: :symbol)
-
     all_games = csv.map do |row|
       Game.new(row)
     end
-
     @@all = all_games
   end
 
@@ -41,5 +39,4 @@ class Game
     @venue = game_parameter[:venue]
     @venue_link = game_parameter[:venue_link]
   end
-
 end

@@ -14,7 +14,10 @@ class StatTracker
     StatTracker.new(game_path, team_path, game_teams_path)
   end
 
-  attr_reader :games, :teams, :game_teams
+  attr_reader :games,
+              :teams,
+              :game_teams
+
   def initialize(game_path, team_path, game_teams_path)
     @games = Game.create_games(game_path)
     @teams = Team.create_teams(team_path)
@@ -81,5 +84,4 @@ class StatTracker
   def most_tackles(season_id); @season_statistic.most_tackles(season_id); end
 
   def fewest_tackles(season_id); @season_statistic.fewest_tackles(season_id); end
-
 end

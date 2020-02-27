@@ -1,7 +1,6 @@
 require_relative 'test_helper'
 require './lib/game'
 
-
 class GameTest < Minitest::Test
 
   def setup
@@ -25,6 +24,4 @@ class GameTest < Minitest::Test
     assert_equal 'BBVA Stadium', @game.venue
     assert_equal '/api/v1/venues/null', @game.venue_link
   end
-
-
 end

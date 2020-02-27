@@ -42,7 +42,6 @@ class SeasonStatistics < Statistics
     difference = percent_wins_regular_season.merge(percent_wins_postseason) do |team_id, reg, post|
       (reg - post).round(2)
     end
-
     find_team_names(hash_key_max_by(difference))
   end
 

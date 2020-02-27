@@ -1,13 +1,10 @@
 require_relative 'test_helper'
-# require_relative './modules/hashable'
-# require_relative './modules/calculable'
 require 'mocha/minitest'
 require './lib/stat_tracker'
 require './lib/game'
 require './lib/team'
 require './lib/game_team'
 require './lib/stat_tracker'
-
 
 class StatisticsTest < Minitest::Test
 
@@ -16,10 +13,6 @@ class StatisticsTest < Minitest::Test
     team_path = './test/fixtures/teams_truncated.csv'
     game_teams_path = './test/fixtures/game_teams_truncated.csv'
 
-    # game_path = './data/games.csv'
-    # team_path = './data/teams.csv'
-    # game_teams_path = './data/game_teams.csv'
-    #
     locations = {
       games: game_path,
       teams: team_path,
@@ -184,6 +177,7 @@ class StatisticsTest < Minitest::Test
   end
 
   def test_it_can_return_regular_results
+    skip
     @statistics.stubs(:game_id_by_team_id_and_season_type).returns({9=>{
       :regular=>[2012020205, 2013021119],
       :post=>[2012030121, 2012030122, 2012030123, 2012030124, 2012030125]
@@ -202,31 +196,4 @@ class StatisticsTest < Minitest::Test
     })
     assert_equal 0.50, @statistics.percent_wins_regular_season[9]
   end
-
-  # def test_team_info
-  #   assert_equal ({"team_id"=>6, "franchise_id"=>6, "team_name"=>"FC Dallas", "abbreviation"=>"DAL", "link"=>"/api/v1/teams/6"}), @statistics.team_info(6)
-  # end
-  #
-  # def test_find_season_wins
-  #   assert_equal 0.57, @statistics.find_season_wins(17, 20122013)
-  # end
-  #
-  # def test_all_seasons
-  #   assert_equal [20122013, 20132014], @statistics.all_seasons
-  # end
-
-  # def test_find_win_average_in_season
-  #   assert_equal ({20122013=>0.57, 20132014=>0}), @statistics.find_win_average_in_seasons(17)
-  # end
-
-  # def test_best_season
-  #   assert_equal 20122013, @statistics.best_season(6)
-  # end
-  #
-  # def test_worst_season
-  #   assert_equal 20132014, @statistics.worst_season(6)
-  # end
-
-
-
 end
