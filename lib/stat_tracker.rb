@@ -41,4 +41,28 @@ class StatTracker
   def percentage_visitor_wins; @game_statistic.percentage_visitor_wins; end
 
   def percentage_ties; @game_statistic.percentage_ties; end
+
+  def count_of_teams; @league_statistic.count_of_teams; end
+
+  def best_offense; @league_statistic.best_offense; end
+
+  def worst_offense; @league_statistic.worst_offense; end
+
+  def best_defense; @league_statistic.best_defense; end
+
+  def worst_defense; @league_statistic.worst_defense; end
+
+  def highest_scoring_visitor; @league_statistic.highest_scoring_visitor; end
+
+  def lowest_scoring_visitor; @league_statistic.lowest_scoring_visitor; end
+
+  def highest_scoring_home_team; @league_statistic.highest_scoring_home_team; end
+
+  def lowest_scoring_home_team; @league_statistic.lowest_scoring_home_team; end
+
+  def winningest_team; @league_statistic.winningest_team; end
+
+  def best_fans; @league_statistic.best_fans; end
+
+  def worst_fans; @league_statistic.worst_fans; end
 end
